@@ -1,16 +1,26 @@
 import React from "react"
-import PropTypes from 'prop-types';
 import style from './ContactList.module.css';
 import { ContactListItem } from "components/ContactListItem/ContactListItem";
+import { useSelector, useDispatch } from "react-redux";
+import { removeContact } from "../../redux/contacts.slice"
+import { SelectedContacts } from "../../redux/selectors"
 
+export const ContactList = () => {
 
-export const ContactList = ({ contacts, onDeleteContact }) => {
+    const FilteredContacts = useSelector(SelectedContacts)
+
+    const dispatch = useDispatch()
+
+    const onDeleteContact = (id) => {
+        dispatch(removeContact(id))
+    }
+
     return (
         <>
-            {contacts.length === 0 ?
+            {FilteredContacts.length === 0 ?
                 (<p> No saved contacts </p>) :
                 (<ul className={style.contactList}>
-                    {contacts.map(item => (
+                    {FilteredContacts.map(item => (
                         <li key={item.id} className={style.contactListItem}>
                             <ContactListItem name={item.name} number={item.number} deleteContact={() => onDeleteContact(item.id)} />
                         </li>
@@ -22,13 +32,6 @@ export const ContactList = ({ contacts, onDeleteContact }) => {
     );
 };
 
-ContactList.propTypes = {
-    contacts: PropTypes.arrayOf(
-        PropTypes.shape({
-            name: PropTypes.string.isRequired,
-            number: PropTypes.string.isRequired,
-            id: PropTypes.string.isRequired,
-        })
-    ).isRequired,
-    onDeleteContact: PropTypes.func.isRequired
-};
+
+
+
